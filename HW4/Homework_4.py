@@ -5,5 +5,5 @@ if variable.replace('.', '').isdigit():
         print('and even as well!')
     else:
         print('and odd as well!')
-elif isinstance(variable, str):
+else:
     print(len(variable))
