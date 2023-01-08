@@ -1,7 +1,7 @@
 # 1. Fibonacci sequences using generator
 def fib_gen(n):
     fibo_1, fibo_2 = 0, 1
-    for _ in range(1, n + 1):
+    for _ in range(n):
         fibo_1, fibo_2 = fibo_2, fibo_1 + fibo_2
     return fibo_1
 
