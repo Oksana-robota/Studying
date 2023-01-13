@@ -1,0 +1,1 @@
+Custom exception is occured 23:45
