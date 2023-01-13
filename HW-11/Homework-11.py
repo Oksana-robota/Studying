@@ -1,10 +1,12 @@
 # decorator for any function:
+from datetime import datetime
+
+
 def my_new_decorator(func):
     def the_wrapper_around_the_original_function(*args, **kwargs):
-        from datetime import datetime
         print(func.__name__, datetime.now().strftime('%H:%M'))
         func(*args, **kwargs)
-
+        return func(*args, **kwargs)
     return the_wrapper_around_the_original_function
 
 
@@ -17,9 +19,6 @@ class MyCustomException(Exception):
 
 # Context manager
 class MyWithManag(object):
-    def __init__(self, func):
-        self.func = func
-
     def __enter__(self):
         print("=" * 10)
 
@@ -28,7 +27,7 @@ class MyWithManag(object):
 
 
 s = sum([2, 3, 4, 5])
-with MyWithManag(s) as r:
+with MyWithManag():
     try:
         print(s)
     except Exception as exp:
@@ -55,6 +54,7 @@ try:
         else:
             print("and odd one as well!")
     else:
-         print(f"This is a word! It's length is {len(variable)}")
+        print(f"This is a word! It's length is {len(variable)}")
 except Exception as exp:
     print(exp)
+
