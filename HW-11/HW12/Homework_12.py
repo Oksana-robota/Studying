@@ -2,43 +2,36 @@ import json
 from datetime import datetime
 
 # 1
-with open('phonebook.txt', 'r+', encoding='utf-8') as phone1:
+with open('phonebook.txt', 'x+', encoding='utf-8') as phone1:
     try:
         phone_book = json.load(phone1)
     except Exception:
-        phone_book = []
+        phone_book = {}
 
 while True:
     commands = input('Write command:\n')
     if commands == 'stats':
         print(f'Amount of records is {len(phone_book)}')
     elif commands == 'list':
-        [print(*i.keys(), sep='\n') for i in phone_book]
+        print(*phone_book.keys(), sep='\n')
     elif commands in ['delete', 'show']:
         name = input('Write name:\n')
-        keys1 = [s for i in phone_book for s in i.keys()]
-        if commands == 'delete' and name in keys1:
-            for i in range(len(phone_book)):
-                if name in phone_book[i].keys():
-                    del phone_book[i]
-                    break
+        if commands == 'delete' and name in phone_book.keys():
+            del phone_book[name]
             with open('phonebook.txt', 'w') as ph:
                 json.dump(phone_book, ph)
                 print(f'Record with name "{name}" was successfully deleted')
-        elif commands == 'show' and name in keys1:
-            for i in phone_book:
-                if name in i.keys():
-                    print(f'Here you could see the info for "{name}": {i[name]}')
+        elif commands == 'show' and name in phone_book.keys():
+            print(f'Here you could see the info for "{name}": {phone_book[name]}')
         else:
             print(f'There is no such name as {name} in phone book. Firstly, you need to add it!')
     elif commands == 'add':
         new_name, phone = input('Provide, please, name and phone:\n').split()
-        keys1 = [s for i in phone_book for s in i.keys()]
-        if new_name in keys1:
+        if new_name in phone_book.keys():
             print(f'Record with {new_name} already exists. Please remove it and add a new one after that')
         else:
             with open('phonebook.txt', 'w') as ph:
-                phone_book.append({new_name: phone})
+                phone_book[new_name] = phone
                 json.dump(phone_book, ph)
                 print(f'Contact "{new_name}" was created in the phone book!')
     elif commands == 'end':
