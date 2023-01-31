@@ -30,7 +30,7 @@ while True:
         if new_name in phone_book.keys():
             print(f'Record with {new_name} already exists. Please remove it and add a new one after that')
         else:
-            if re.match(r'\A(\+380|380|0)[0-9]{7}', phone):
+            if re.match(r'\A(\+380|380|0)[0-9]{9}\b', phone):
                 with open('phonebook.txt', 'w') as ph:
                     phone_book[new_name] = phone
                     json.dump(phone_book, ph)
