@@ -71,18 +71,19 @@ new_class_bot = type('Bot1',
 def init_func1(self, name, url=None, chat_id=None):
     self.url = url
     self.chat_id = chat_id
-    new_class_bot.__init__(self, name)
+    #new_class_bot.__init__(self, name)
+    self.__class__.__bases__[0].__init__(self, name)
 
 
 def send_message_func(self, message):
     print(f'{self.name} bot says {message} to chat {self.chat_id} using {self.url}')
 
 
-def set_chat_id_func(self, chat_id=None):
+def set_chat_id_func(self, chat_id):
     self.chat_id = chat_id
 
 
-def set_url_func(self, url=None):
+def set_url_func(self, url):
     self.url = url
 
 
@@ -91,3 +92,6 @@ new_class_telegrambot = type('TelegramBot1',
                              {'__init__': init_func1, 'send_message': send_message_func,
                               'set_chat_id': set_chat_id_func,
                               'set_url': set_url_func, 'super().__init__(name)': init_func})
+
+c = new_class_telegrambot('bbbb')
+c.send_message('hhhhh')
