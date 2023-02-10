@@ -1,6 +1,6 @@
 INSERT INTO users 
 	(first_name, last_name, age) VALUES 
-	("Elena", "Komarova", 45,
+	("Elena", "Komarova", 45),
  	("Diana", "Rudova", 30),
 	("Dima", "Pertsovoi", 27),
 	("Oleksandra", "Dubovik", 29),
