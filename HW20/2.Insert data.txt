@@ -1,0 +1,15 @@
+INSERT INTO users 
+	(first_name, last_name, age) 
+	VALUES ("Elena", "Komarova", 45);
+INSERT INTO users 
+	(first_name, last_name, age) 
+	VALUES ("Diana", "Rudova", 30);
+INSERT INTO users 
+	(first_name, last_name, age)
+	VALUES ("Dima", "Pertsovoi", 27); 
+INSERT INTO users 
+	(first_name, last_name, age)
+	VALUES ("Oleksandra", "Dubovik", 29);
+INSERT INTO users 
+	(first_name, last_name, age)
+	VALUES ("Oleksii", "Anenkov", 40); 

@@ -1,0 +1,6 @@
+CREATE TABLE users (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	first_name VARCHAR,
+	last_name VARCHAR,
+	age INTEGER
+);
