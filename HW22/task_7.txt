@@ -1,0 +1,4 @@
+select books.author, sum(price) ttl_price, count(*) amount_books
+from purchase
+join books on books.id = purchase.book_id
+group by books.author

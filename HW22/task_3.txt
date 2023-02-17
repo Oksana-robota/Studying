@@ -1,0 +1,12 @@
+select users.id, users.first_name, users.last_name, books.title
+from users, books, purchase
+where users.id = purchase.user_id and purchase.book_id = books.id 
+order by users.id
+
+or
+
+select users.id, users.first_name, users.last_name, books.title
+from users
+join books on purchase.book_id = books.id
+join purchase on users.id = purchase.user_id
+order by users.id
