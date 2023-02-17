@@ -2,31 +2,31 @@ CREATE TABLE users (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	first_name TEXT,
 	last_name TEXT,
-	age INTEGER
+	age INTEGER not null
 );
 
 CREATE TABLE publishing_house (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	name TEXT,
-	rating INTEGER DEFAULT 5
+	rating INTEGER not null DEFAULT 5
 );
 
 CREATE TABLE books (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	title TEXT,
 	author TEXT,
-	year INTEGER,
-	price INTEGER,
-	publishing_house_id INTEGER,
+	year INTEGER not null,
+	price INTEGER not null,
+	publishing_house_id INTEGER not null,
 	FOREIGN KEY (publishing_house_id) references publishing_houses(id)
 );
 
 
 CREATE TABLE purchase (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	user_id INTEGER,
-	book_id INTEGER,
-	date TEXT,
+	user_id INTEGER not null,
+	book_id INTEGER not null,
+	date TEXT default CURRENT_TIMESTAMP,
 	FOREIGN KEY (user_id) references users(id),
 	FOREIGN KEY (book_id) references books(id)
 );
