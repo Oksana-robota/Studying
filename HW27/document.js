@@ -58,5 +58,5 @@ btn4.addEventListener("click", (Btnevent) => {
     tbrow.appendChild(tbcol2);
     tbrow.appendChild(tbcol3);
     tbel.insertBefore(tbrow, tbel.lastElementChild);
-    document.getElementById('ttl').innerHTML = '75/<span>/75</span>';
+    document.getElementById('ttl').innerHTML = '75/<span>75</span>';
     })
