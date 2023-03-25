@@ -13,17 +13,21 @@ print(f'Title: {str(title.group(0)).title()}')
 print(f'HTML code length: {len(get_req.text)}')
 
 # 2
-town = input()
+town = input().title()
 coord = requests.get(f'https://geocoding-api.open-meteo.com/v1/search?name={town}')
 latitude, longitude, timezone = '','',''
-for i in coord.json()['results']:
-    if i['name'] == town:
-        latitude = i['latitude']
-        longitude = i['longitude']
-        timezone = i['timezone']
-        break
-weather = requests.get(f'https://api.open-meteo.com/v1/forecast?latitude={latitude}'
-                       f'&longitude={longitude}&timezone={timezone}&current_weather=true')
-print(f'Current weather in {town}')
-for k, v in weather.json()['current_weather'].items():
-    print(f'{k.title()}: {v}')
+try:
+    for i in coord.json()['results']:
+        if i['name'] == town:
+            latitude = i['latitude']
+            longitude = i['longitude']
+            timezone = i['timezone']
+            break
+    weather = requests.get(f'https://api.open-meteo.com/v1/forecast?latitude={latitude}'
+                           f'&longitude={longitude}&timezone={timezone}&current_weather=true')
+    print(f'Current weather in {town}')
+    for k, v in weather.json()['current_weather'].items():
+        print(f'{k.title()}: {v}')
+except:
+    print("Such town doesn't exist. Try again please!")
+
