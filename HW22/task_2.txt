@@ -1,9 +1,0 @@
-select purchase.id, purchase.date, users.first_name, users.last_name
-from purchase, users
-where purchase.user_id = users.id
-
-or
-
-select purchase.id, purchase.date, users.first_name, users.last_name
-from purchase
-join users on users.id = purchase.user_id

@@ -1,5 +1,0 @@
-select users.id, users.first_name, users.last_name, sum(books.price) ttl_price
-from users
-join purchase on purchase.user_id = users.id
-join books on purchase.book_id = books.id
-group by users.id, users.first_name, users.last_name

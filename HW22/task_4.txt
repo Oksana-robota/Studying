@@ -1,6 +1,0 @@
-select users.id, count(*) purchases_count
-from users
-join books on purchase.book_id = books.id
-join purchase on users.id = purchase.user_id
-group by users.id
-order by users.id

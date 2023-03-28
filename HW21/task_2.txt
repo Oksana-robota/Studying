@@ -1,3 +1,0 @@
-select count(*) as amount_of_records
-from users
-where age > 30
