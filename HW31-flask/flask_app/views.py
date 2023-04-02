@@ -1,10 +1,10 @@
 from app import app
 from random import sample, randrange
-from flask import request, redirect
+from flask import request, redirect, render_template, session, url_for
 from markupsafe import escape
 import werkzeug.exceptions
 
-
+app.secret_key = 'secret'
 @app.route('/hello')
 def index():
     app.logger.info("This INFO request")
@@ -23,13 +23,19 @@ def users():
                  "Алина", "Алиса", "Алла", "Алсу", "Альба", "Альбина", "Аля", "Амалия",
                  "Амина", "Анастасия", "Ангелина", "Анжела", "Анжелика", "Анисья",
                  "Анна", "Антонина", "Аполлинария", "Арина", "Астрид", "Белла", "Берта", "Валентина"]
-    if request.args:
-        lst2 = sample(lst_names, k=int(request.args.get('count')))
+    if session.get('user'):
+        if request.args:
+            lst2 = sample(lst_names, k=int(request.args.get('count')))
+        else:
+            amnt_nm = randrange(1, len(lst_names))
+            lst2 = sample(lst_names, k=amnt_nm)
+        res = {
+            'user': f'Hello {session.get("user")}',
+            'lst2': lst2
+        }
+        return render_template('users.html', **res)
     else:
-        amnt_nm = randrange(1, len(lst_names))
-        lst2 = sample(lst_names, k=amnt_nm)
-    return f'<div>{lst2}</div>'
-
+        return redirect(url_for('login'))
 
 @app.route('/books')
 def books():
@@ -41,63 +47,69 @@ def books():
                  "Приключения Шерлока Холмса", "Дубровский", "Горе от ума", "Драма на охоте",
                  "Капитанская дочка", "Униженные и оскорблённые", "Воскресение", "Дворянское гнездо",
                  "Рассказы", "Триумфальная арка", "Подросток", "Старик и море"]
-    if request.args:
-        lst3 = sample(lst_books, k=int(request.args.get('count')))
+    if session.get('user'):
+        if request.args:
+            lst3 = sample(lst_books, k=int(request.args.get('count')))
+        else:
+            amnt_nm = randrange(1, len(lst_books))
+            lst3 = sample(lst_books, k=amnt_nm)
+        res = {
+            'user': f'Hello {session.get("user")}',
+            'lst3': lst3
+        }
+        return render_template('books.html', **res)
     else:
-        amnt_nm = randrange(1, len(lst_books))
-        lst3 = sample(lst_books, k=amnt_nm)
-    res = '<ul>'
-    for i in lst3:
-        res += f'<li>{i}</li>'
-    res += '</ul>'
-    return f"<div>{res}</div>"
+        return redirect(url_for('login'))
 
 
 # 2
 @app.route('/users/<int:n>')
 def users_id(n):
-    if n % 2 == 0:
-        return f'{n / 2}'
-    return 'Not Found', 404
-
+    if session.get('user'):
+        res = {
+            'user': f'Hello {session.get("user")}',
+            'n': n
+        }
+        return render_template('users_id.html', **res)
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/books/<string:n>')
 def books_title(n):
-    return f'{n.title()}'
-
+    if session.get('user'):
+        res = {
+            'user': f'Hello {session.get("user")}',
+            'n': n
+        }
+        return render_template('books_id.html', **res)
+    else:
+        return redirect(url_for('login'))
 
 # 3
 @app.get('/params')
 def params():
-    res = '''<table>
-                    <tr>
-                        <th>parameter</th>
-                        <th style="border-left: 1px solid;">value</th>
-                    </tr>'''
-    for key, value in request.args.items():
-        res += f'<tr><td>{escape(key)}</td>' \
-               f'<td style="border-left: 1px solid;">{escape(value)}</td></tr>'
-    res += '</table>'
-    return f"<div>{res}</div>"
+    if session.get('user'):
+        n = request.args.items()
+        res = {
+            'user': f'Hello {session.get("user")}',
+            'n': n
+        }
+        return render_template('params.html', **res)
+    else:
+        return redirect(url_for('login'))
 
 
 # 4
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        html_form = """
-        <form method=POST action='/login'>
-            <input type='string' name='login' value="" />
-            <input type='password' name='password' value="" />
-            <button type='submit'>Send form</button>
-        </form>
-        """
-        return html_form, 200
+        return render_template('login.html')
     elif request.method == 'POST':
         if request.form.get('login') and request.form.get('password'):
             if len(request.form.get('login')) >= 5:
                 if len(request.form.get('password')) >= 8 and any(map(str.isdigit, request.form.get('password')))\
                         and any(map(str.isupper, request.form.get('password'))):
+                    session['user'] = request.form.get('login')
                     return redirect('/users')
                 else:
                     return "Password should contain at least 8 symbols, 1 number and 1 title letter"
@@ -125,3 +137,9 @@ def main_page():
                 <div><a href='/users'>users</a></div>
                 <div><a href='/books'>books</a></div>
                 <div><a href='/params'>params</a></div>'''
+
+
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    return redirect('/login')

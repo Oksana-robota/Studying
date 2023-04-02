@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>User_id</title>
+</head>
+<body>
+
+    <div>
+        {% if n % 2 == 0 %}
+        <div>{{ user }}</div>
+        <span>{{ n / 2 }}</span>
+        <h1></h1>
+        <form action="/logout" target="_blank">
+                <button>Logout</button>
+        </form>
+        {% else %}
+        <span>Not Found</span>
+        {% endif %}
+    </div>
+</body>
+</html>
