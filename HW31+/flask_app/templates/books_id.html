@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Books_id</title>
+</head>
+<body>
+    <div>{{ user }}</div>
+    <div>{{ n.title() }}</div>
+    <h1></h1>
+    <form action="/logout" target="_blank">
+                <button>Logout</button>
+    </form>
+</body>
+</html>
