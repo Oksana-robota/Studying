@@ -13,4 +13,3 @@ dictConfig({
 })
 
 from .views import *
-
