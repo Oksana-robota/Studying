@@ -1,0 +1,4 @@
+select age, count(*) as ttl_users
+from users
+group by age
+order by ttl_users desc, age
