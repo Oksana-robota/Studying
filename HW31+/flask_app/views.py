@@ -1,8 +1,9 @@
-from app import app
+from . import app
 from random import sample, randrange
-from flask import request, redirect, render_template, session, url_for
-from markupsafe import escape
+from flask import request, redirect, render_template, session, url_for, abort
 import werkzeug.exceptions
+
+app.secret_key = 'secret'
 
 
 @app.route('/hello')
@@ -24,8 +25,11 @@ def users():
                  "Амина", "Анастасия", "Ангелина", "Анжела", "Анжелика", "Анисья",
                  "Анна", "Антонина", "Аполлинария", "Арина", "Астрид", "Белла", "Берта", "Валентина"]
     if session.get('user'):
-        if request.args:
-            lst2 = sample(lst_names, k=int(request.args.get('count')))
+        if 'count' in request.args:
+            if request.args.get('count').isdigit():
+                lst2 = sample(lst_names, k=int(request.args.get('count')))
+            else:
+                return "Value 'count' should be a number"
         else:
             amnt_nm = randrange(1, len(lst_names))
             lst2 = sample(lst_names, k=amnt_nm)
@@ -36,6 +40,7 @@ def users():
         return render_template('users.html', **res)
     else:
         return redirect(url_for('login'))
+
 
 @app.route('/books')
 def books():
@@ -48,8 +53,11 @@ def books():
                  "Капитанская дочка", "Униженные и оскорблённые", "Воскресение", "Дворянское гнездо",
                  "Рассказы", "Триумфальная арка", "Подросток", "Старик и море"]
     if session.get('user'):
-        if request.args:
-            lst3 = sample(lst_books, k=int(request.args.get('count')))
+        if 'count' in request.args:
+            if request.args.get('count').isdigit():
+                lst3 = sample(lst_books, k=int(request.args.get('count')))
+            else:
+                return "Value 'count' should be a number"
         else:
             amnt_nm = randrange(1, len(lst_books))
             lst3 = sample(lst_books, k=amnt_nm)
@@ -70,9 +78,13 @@ def users_id(n):
             'user': f'Hello {session.get("user")}',
             'n': n
         }
-        return render_template('users_id.html', **res)
+        if n % 2 == 0:
+            return render_template('users_id.html', **res)
+        else:
+            return abort(404)
     else:
         return redirect(url_for('login'))
+
 
 @app.route('/books/<string:n>')
 def books_title(n):
@@ -84,6 +96,7 @@ def books_title(n):
         return render_template('books_id.html', **res)
     else:
         return redirect(url_for('login'))
+
 
 # 3
 @app.get('/params')
@@ -107,7 +120,7 @@ def login():
     elif request.method == 'POST':
         if request.form.get('login') and request.form.get('password'):
             if len(request.form.get('login')) >= 5:
-                if len(request.form.get('password')) >= 8 and any(map(str.isdigit, request.form.get('password')))\
+                if len(request.form.get('password')) >= 8 and any(map(str.isdigit, request.form.get('password'))) \
                         and any(map(str.isupper, request.form.get('password'))):
                     session['user'] = request.form.get('login')
                     return redirect('/users')
@@ -133,10 +146,7 @@ def default_500(e):
 # 6
 @app.route('/')
 def main_page():
-    return f'''<div><a href='/login'>login</a><div>
-                <div><a href='/users'>users</a></div>
-                <div><a href='/books'>books</a></div>
-                <div><a href='/params'>params</a></div>'''
+    return render_template('main.html')
 
 
 @app.route('/logout')
