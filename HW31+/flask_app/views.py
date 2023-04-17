@@ -1,9 +1,13 @@
-from . import app
+import os
+from . import app, db
 from random import sample, randrange
 from flask import request, redirect, render_template, session, url_for, abort
 import werkzeug.exceptions
+from .models import User, Book, Purchase
 
-app.secret_key = 'secret'
+
+
+app.secret_key = os.getenv('SECRET')
 
 
 @app.route('/hello')
@@ -153,3 +157,150 @@ def main_page():
 def logout():
     session.pop('user', None)
     return redirect('/login')
+
+
+
+# HW34
+@app.route('/users1')
+def users1():
+    if request.args.get('size'):
+        all_users = User.query.limit(int(request.args.get('size')))
+    else:
+        all_users = User.query.all()
+    dict_users = [{
+        'id': user.id,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'age': user.age
+    } for user in all_users]
+    return dict_users
+
+
+@app.route('/users1/<int:user_id>')
+def users1_id(user_id):
+    all_users = User.query.get(user_id)
+    if all_users:
+        user1 = [{
+            'id': all_users.id,
+            'first_name': all_users.first_name,
+            'last_name': all_users.last_name,
+            'age': all_users.age
+            }]
+        return user1
+    return abort(404)
+
+
+@app.route('/books1')
+def books1():
+    if request.args.get('size'):
+        all_books = Book.query.limit(int(request.args.get('size')))
+    else:
+        all_books = Book.query.all()
+    dict_books = [{
+        'id': book.id,
+        'title': book.title,
+        'author': book.author,
+        'year': book.year,
+        'price': book.price
+    } for book in all_books]
+    return dict_books
+
+
+@app.route('/books1/<int:book_id>')
+def books1_id(book_id):
+    all_books = User.query.get(book_id)
+    if all_books:
+        book1 = [{
+            'id': all_books.id,
+            'title': all_books.title,
+            'author': all_books.author,
+            'year': all_books.year,
+            'price': all_books.price
+        }]
+        return book1
+    return abort(404)
+
+
+@app.route('/purchase')
+def purchase():
+    if request.args.get('size'):
+        all_purchase = Purchase.query.limit(int(request.args.get('size')))
+    else:
+        all_purchase = Purchase.query.all()
+    dict_purchase = []
+    for purchase_1 in all_purchase:
+        purchase_2 = {
+            'id': purchase_1.id,
+            'user_id': purchase_1.user_id,
+            'book_id': purchase_1.book_id,
+            'date': purchase_1.date,
+            'title': purchase.book.title,
+            'first_name': purchase.user.first_name,
+            'last_name': purchase.user.last_name
+        }
+        dict_purchase.append(purchase_2)
+    return dict_purchase
+
+
+@app.route('/purchase/<int:purchases_id>')
+def purchase_id(purchases_id):
+    all_purchase = Purchase.query.get(purchases_id)
+    if all_purchase:
+        purchase_1 = [{
+            'id': all_purchase.id,
+            'user_id': all_purchase.user_id,
+            'book_id': all_purchase.book_id,
+            'date': all_purchase.date,
+            'title': purchase.book.title,
+            'first_name': purchase.user.first_name,
+            'last_name': purchase.user.last_name
+        }]
+        return purchase_1
+    return abort(404)
+
+
+@app.route('/users1', methods=['POST', ])
+def create_user():
+    user = User(
+        first_name=request.json.get('first_name'),
+        last_name=request.json.get('last_name'),
+        age=request.json.get('age')
+    )
+    db.session.add(user)
+    db.session.commit()
+    return f'User {user.id} created', 201
+
+
+@app.route('/books1', methods=['POST', ])
+def create_book():
+    book = Book(
+        title=request.json.get('title'),
+        author=request.json.get('author'),
+        year=request.json.get('year'),
+        price=request.json.get('price')
+    )
+    db.session.add(book)
+    db.session.commit()
+    return f'Book {book.id} created', 201
+
+
+@app.route('/purchase', methods=['POST', ])
+def create_purchase():
+    purchase1 = Purchase(
+        user_id=request.json.get('user_id'),
+        book_id=request.json.get('book_id'),
+        date=request.json.get('date')
+    )
+    book1 = Book.query.get(request.json.get('book_id'))
+    user1 = User.query.get(request.json.get('user_id'))
+    if book1 and user1:
+        db.session.add(purchase1)
+        db.session.commit()
+        return f'Book {purchase1.id} created', 201
+    else:
+        if not book1:
+            return "There is no such book_id"
+        elif not user1:
+            return "There is no such user_id"
+        else:
+            return "There is no such book_id and user_id"
