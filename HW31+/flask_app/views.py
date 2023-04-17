@@ -163,36 +163,39 @@ def logout():
 # HW34
 @app.route('/users1')
 def users1():
-    all_users = User.query.all()
+    if request.args.get('size'):
+        all_users = User.query.limit(int(request.args.get('size')))
+    else:
+        all_users = User.query.all()
     dict_users = [{
         'id': user.id,
         'first_name': user.first_name,
         'last_name': user.last_name,
         'age': user.age
     } for user in all_users]
-    if 'size' in request.args:
-        return dict_users[:int(request.args.get('size'))]
     return dict_users
 
 
 @app.route('/users1/<int:user_id>')
 def users1_id(user_id):
-    all_users = User.query.all()
-    for user in all_users:
-        if user.id == user_id:
-            user1 = [{
-                'id': user.id,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'age': user.age
+    all_users = User.query.get(user_id)
+    if all_users:
+        user1 = [{
+            'id': all_users.id,
+            'first_name': all_users.first_name,
+            'last_name': all_users.last_name,
+            'age': all_users.age
             }]
-            return user1
+        return user1
     return abort(404)
 
 
 @app.route('/books1')
 def books1():
-    all_books = Book.query.all()
+    if request.args.get('size'):
+        all_books = Book.query.limit(int(request.args.get('size')))
+    else:
+        all_books = Book.query.all()
     dict_books = [{
         'id': book.id,
         'title': book.title,
@@ -200,70 +203,59 @@ def books1():
         'year': book.year,
         'price': book.price
     } for book in all_books]
-    if 'size' in request.args:
-        return dict_books[:int(request.args.get('size'))]
     return dict_books
 
 
 @app.route('/books1/<int:book_id>')
 def books1_id(book_id):
-    all_books = Book.query.all()
-    for book in all_books:
-        if book.id == book_id:
-            book1 = [{
-                'id': book.id,
-                'title': book.title,
-                'author': book.author,
-                'year': book.year,
-                'price': book.price
-            }]
-            return book1
+    all_books = User.query.get(book_id)
+    if all_books:
+        book1 = [{
+            'id': all_books.id,
+            'title': all_books.title,
+            'author': all_books.author,
+            'year': all_books.year,
+            'price': all_books.price
+        }]
+        return book1
     return abort(404)
 
 
 @app.route('/purchase')
 def purchase():
-    all_purchase = Purchase.query.all()
+    if request.args.get('size'):
+        all_purchase = Purchase.query.limit(int(request.args.get('size')))
+    else:
+        all_purchase = Purchase.query.all()
     dict_purchase = []
     for purchase_1 in all_purchase:
-        all_books = Book.query.all()
-        book1 = [book for book in all_books if purchase_1.book_id == book.id]
-        all_users = User.query.all()
-        user1 = [user for user in all_users if purchase_1.user_id == user.id]
         purchase_2 = {
             'id': purchase_1.id,
             'user_id': purchase_1.user_id,
             'book_id': purchase_1.book_id,
             'date': purchase_1.date,
-            'title': book1[0].title,
-            'first_name': user1[0].first_name,
-            'last_name': user1[0].last_name
+            'title': purchase.book.title,
+            'first_name': purchase.user.first_name,
+            'last_name': purchase.user.last_name
         }
         dict_purchase.append(purchase_2)
-    if 'size' in request.args:
-        return dict_purchase[:int(request.args.get('size'))]
     return dict_purchase
 
 
 @app.route('/purchase/<int:purchases_id>')
 def purchase_id(purchases_id):
-    all_purchase = Purchase.query.all()
-    for purchase1 in all_purchase:
-        if purchase1.id == purchases_id:
-            all_books = Book.query.all()
-            book1 = [book for book in all_books if purchase1.book_id == book.id]
-            all_users = User.query.all()
-            user1 = [user for user in all_users if purchase1.user_id == user.id]
-            purchase_1 = [{
-                'id': purchase1.id,
-                'user_id': purchase1.user_id,
-                'book_id': purchase1.book_id,
-                'date': purchase1.date,
-                'title': book1[0].title,
-                'first_name': user1[0].first_name,
-                'last_name': user1[0].last_name
-            }]
-            return purchase_1
+    all_purchase = Purchase.query.get(purchases_id)
+    if all_purchase:
+        purchase_1 = [{
+            'id': all_purchase.id,
+            'user_id': all_purchase.user_id,
+            'book_id': all_purchase.book_id,
+            'date': all_purchase.date,
+            'title': purchase.book.title,
+            'first_name': purchase.user.first_name,
+            'last_name': purchase.user.last_name
+        }]
+        return purchase_1
     return abort(404)
 
 
@@ -299,11 +291,9 @@ def create_purchase():
         book_id=request.json.get('book_id'),
         date=request.json.get('date')
     )
-    all_books = Book.query.all()
-    book1 = [1 for i in all_books if purchase1.book_id == i.id]
-    all_users = User.query.all()
-    user1 = [1 for i in all_users if purchase1.user_id == i.id]
-    if book1 == user1:
+    book1 = Book.query.get(request.json.get('book_id'))
+    user1 = User.query.get(request.json.get('user_id'))
+    if book1 and user1:
         db.session.add(purchase1)
         db.session.commit()
         return f'Book {purchase1.id} created', 201
