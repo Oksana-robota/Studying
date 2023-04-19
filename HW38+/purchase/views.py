@@ -3,7 +3,7 @@ from .models import Purchase
 
 
 def my_view_purchase(request):
-    purchases = Purchase.objects.all().order_by('date')
+    purchases = Purchase.objects.all()
     purchase_all = [{
         'id': i.id,
         'user_id': i.user_id,

@@ -11,3 +11,4 @@ class Purchase(models.Model):
 
     class Meta:
         db_table = 'purchase'
+        ordering = ['-date']
