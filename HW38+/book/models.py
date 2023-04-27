@@ -16,3 +16,6 @@ class Book(models.Model):
     def __str__(self):
         return f'''The book {self.title} with id - {self.id} was written by {self.author} in {self.year}.
                     It's price is {self.price}'''
+
+    def get_absolute_url(self):
+        return f'detail/{self.id}'
