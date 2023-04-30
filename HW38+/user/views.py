@@ -2,7 +2,8 @@ from django.http import HttpResponse
 from .models import User
 from django.views.generic import ListView, DetailView, CreateView
 from .forms import UserForm
-
+from rest_framework.viewsets import ModelViewSet
+from .serializers import UserSerializer
 
 class UserListView(ListView):
     model = User
@@ -16,6 +17,14 @@ class UserDetailView(DetailView):
 class UserCreateView(CreateView):
     model = User
     form_class = UserForm
+
+
+# DRF
+class UserViewSet(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
 
 # simple views
 # def my_view(request):

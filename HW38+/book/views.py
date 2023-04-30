@@ -2,7 +2,8 @@ from django.http import HttpResponse
 from .models import Book
 from django.views.generic import ListView, DetailView, CreateView
 from .forms import BookForm
-from django.urls import reverse_lazy
+from rest_framework.viewsets import ModelViewSet
+from .serializers import BookSerializer
 
 
 class BookListView(ListView):
@@ -18,6 +19,11 @@ class BookCreateView(CreateView):
     model = Book
     form_class = BookForm
     # success_url = reverse_lazy()
+
+
+class BookViewSet(ModelViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
 
 # simple views
 # def my_view_book(request):
