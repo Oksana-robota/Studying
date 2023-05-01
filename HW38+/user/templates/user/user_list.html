@@ -1,0 +1,8 @@
+<div>
+    {% for user in object_list %}
+        User id:{{ user.id }} <br>
+        First name: {{ user.first_name|upper}}<br>
+        Age: {{ user.age }}<br>
+        -----<br>
+    {% endfor %}
+</div>

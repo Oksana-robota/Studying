@@ -1,0 +1,6 @@
+Purchase form
+<form method="POST" action="/purchase/create">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+</form>

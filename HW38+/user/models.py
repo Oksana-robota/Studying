@@ -13,3 +13,6 @@ class User(models.Model):
 
     def __str__(self):
         return f'User with id - {self.id}: {self.first_name} {self.last_name}'
+
+    def get_absolute_url(self):
+        return f'detail/{self.id}'
