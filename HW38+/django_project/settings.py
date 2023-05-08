@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'book.apps.BookConfig',
     'purchase.apps.PurchaseConfig',
-    'rest_framework'
+    'rest_framework',
+    'django_filters'
 ]
 
 MIDDLEWARE = [
@@ -75,6 +76,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_project.wsgi.application'
 
+# Rest framework
+REST_FRAMEWORK = {
+    'PAGE_SIZE': 5,
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend',]
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
