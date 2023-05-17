@@ -1,0 +1,42 @@
+version: “3.8”
+
+services:
+  robot_app:
+    build: "."
+    command: gunicorn --bind 0.0.0.0:4200 robot_app:app
+    restart: always
+    ports:
+      - "4200:4200"
+    env_file:
+      - .env
+    depends_on:
+      - database
+
+  database:
+    image: postgres:14-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    networks:
+      - nginx_network
+    depends_on:
+      - flask_app
+
+networks:
+  nginx_network:
+    name: nginx_network
+    driver: bridge
+  database_network:
+    name: database_network
+    driver: bridge
+
+volumes:
+  postgres_data:
