@@ -49,6 +49,5 @@ class UserViewSetTest(TestCase):
 
     def test_delete_user(self):
         response = self.client.delete(f'/users/{self.user.id}/')
-        print(self.user)
         print(response.request)
         self.assertEqual(response.status_code, 204)
